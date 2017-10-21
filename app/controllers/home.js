@@ -7,5 +7,5 @@ module.exports = (app) => {
 };
 
 router.get('/', (req, res, next) => {
-    res.json({success: true});
+    res.render('index')
 });
