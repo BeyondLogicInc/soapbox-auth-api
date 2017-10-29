@@ -1,5 +1,7 @@
 const passport = require('passport');
 const request = require('request');
+const get = require('lodash/get');
+const head = require('lodash/head');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const GoogleStrategy = require('passport-google-oauth').Strategy;
@@ -34,7 +36,7 @@ passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_ID,
     clientSecret: process.env.FACEBOOK_SECRET,
     callbackURL: "http://localhost:3000/login/facebook/return",
-    profileFields: ['name','email','link','gender'],
+    profileFields: ['name','emails','link','gender'],
     passReqToCallback: true
 }, (req, accessToken, refreshToken, profile, done) => {
     var fbProfileDetails = {};
@@ -43,7 +45,6 @@ passport.use(new FacebookStrategy({
     fbProfileDetails.name = profile.name || `${profile.name.givenName} ${profile.name.familyName}`;
     fbProfileDetails.gender = profile.gender || profile._json.gender;
     fbProfileDetails.picture = profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
-    console.log(fbProfileDetails);
+    fbProfileDetails.email = get(head(profile.emails), 'value', '');
     done(null, fbProfileDetails);
-
 }));

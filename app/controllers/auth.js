@@ -8,6 +8,10 @@ module.exports = (app) => {
 
 router.get('/login/facebook', passport.authenticate('facebook', { scope: ['email', 'public_profile'] }));
 router.get('/login/facebook/return', passport.authenticate('facebook', { failureRedirect: '/' }), (req, res) => {
-    res.writeHead(301, {Location: "http://localhost/soapbox/"});
+    const queryString = `email=${req.user.email}&id=${req.user.id}&accessToken=${req.user.accessToken}`;
+    console.log(req.user)
+    res.writeHead(301, {
+        Location: `http://localhost/soapbox/socialLogin/process?${queryString}`
+    });
     res.end();
 });
