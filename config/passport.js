@@ -64,6 +64,21 @@ passport.use(new GoogleStrategy({
     googleProfileDetails.accessToken = accessToken;
     googleProfileDetails.gender = profile.gender || profile._json.gender;
     googleProfileDetails.picture = profile._json.image.url;
-    googleProfileDetails.email = get(head(profile.emails), 'value', '');    
+    googleProfileDetails.email = get(head(profile.emails), 'value', '');
     done(null, googleProfileDetails);
+}));
+
+/**
+ * Sign in with Twitter.
+ */
+passport.use(new TwitterStrategy({
+    consumerKey: process.env.TWITTER_KEY,
+    consumerSecret: process.env.TWITTER_SECRET,
+    callbackURL: "http://localhost:3000/login/twitter/return",
+    passReqToCallback: true,
+}, (req, accessToken, tokenSecret, profile, done) => {
+    console.log('accessToken : ' + accessToken);
+    console.log('-----------------------------');
+    console.log(profile);
+    done(null, profile);
 }));
