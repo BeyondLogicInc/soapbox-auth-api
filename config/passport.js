@@ -64,7 +64,6 @@ passport.use(new GoogleStrategy({
     googleProfileDetails.accessToken = accessToken;
     googleProfileDetails.gender = profile.gender || profile._json.gender;
     googleProfileDetails.picture = profile._json.image.url;
-    googleProfileDetails.email = get(head(profile.emails), 'value', '');
-    console.log(profile)
+    googleProfileDetails.email = get(head(profile.emails), 'value', '');    
     done(null, googleProfileDetails);
 }));
