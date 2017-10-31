@@ -4,7 +4,7 @@ const get = require('lodash/get');
 const head = require('lodash/head');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
-const GoogleStrategy = require('passport-google-oauth').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 passport.serializeUser(function(user, cb) {
   cb(null, user);
@@ -47,4 +47,24 @@ passport.use(new FacebookStrategy({
     fbProfileDetails.picture = profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
     fbProfileDetails.email = get(head(profile.emails), 'value', '');
     done(null, fbProfileDetails);
+}));
+
+/**
+ * Sign in with Google.
+ */
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_ID,
+    clientSecret: process.env.GOOGLE_SECRET,
+    callbackURL: "http://localhost:3000/login/google/return",
+    passReqToCallback: true,
+}, (req, accessToken, refreshToken, profile, done) => {
+    var googleProfileDetails = {};
+    googleProfileDetails.id = profile.id;
+    googleProfileDetails.name = profile.displayName || `${profile.name.givenName} ${profile.name.familyName}`;
+    googleProfileDetails.accessToken = accessToken;
+    googleProfileDetails.gender = profile.gender || profile._json.gender;
+    googleProfileDetails.picture = profile._json.image.url;
+    googleProfileDetails.email = get(head(profile.emails), 'value', '');
+    console.log(profile)
+    done(null, googleProfileDetails);
 }));
