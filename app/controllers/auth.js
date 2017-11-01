@@ -25,7 +25,11 @@ router.get('/login/google/return', passport.authenticate('google', { failureRedi
     res.end();
 });
 
-router.get('/login/twitter', passport.authenticate('twitter'));
-router.get('/login/twitter/return', passport.authenticate('twitter', { failureRedirect: '/' }), (req, res) => {
-    res.redirect('/');
+router.get('/login/github', passport.authenticate('github'));
+router.get('/login/github/return', passport.authenticate('github', { failureRedirect: '/' }), (req, res) => {
+    const queryString = `provider=github&email=${req.user.email}&id=${req.user.id}&accessToken=${req.user.accessToken}`;
+    res.writeHead(301, {
+        Location: `http://localhost/soapbox/socialLogin/process?${queryString}`
+    });
+    res.end();
 });

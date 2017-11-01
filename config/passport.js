@@ -3,7 +3,7 @@ const request = require('request');
 const get = require('lodash/get');
 const head = require('lodash/head');
 const FacebookStrategy = require('passport-facebook').Strategy;
-const TwitterStrategy = require('passport-twitter').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 passport.serializeUser(function(user, cb) {
@@ -71,14 +71,17 @@ passport.use(new GoogleStrategy({
 /**
  * Sign in with Twitter.
  */
-passport.use(new TwitterStrategy({
-    consumerKey: process.env.TWITTER_KEY,
-    consumerSecret: process.env.TWITTER_SECRET,
-    callbackURL: "http://localhost:3000/login/twitter/return",
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_ID,
+    clientSecret: process.env.GITHUB_SECRET,
+    callbackURL: "http://localhost:3000/login/github/return",
     passReqToCallback: true,
 }, (req, accessToken, tokenSecret, profile, done) => {
-    console.log('accessToken : ' + accessToken);
-    console.log('-----------------------------');
-    console.log(profile);
-    done(null, profile);
+    var githubProfileDetails = {};
+    githubProfileDetails.id = profile.id;
+    githubProfileDetails.accessToken = accessToken;
+    githubProfileDetails.name = profile.displayName || profile._json.name;    
+    githubProfileDetails.picture = profile._json.avatar_url;
+    githubProfileDetails.email = get(head(profile.emails), 'value', '') || profile._json.email;
+    done(null, githubProfileDetails);
 }));
