@@ -80,7 +80,8 @@ passport.use(new GitHubStrategy({
     var githubProfileDetails = {};
     githubProfileDetails.id = profile.id;
     githubProfileDetails.accessToken = accessToken;
-    githubProfileDetails.name = profile.displayName || profile._json.name;    
+    githubProfileDetails.name = profile.displayName || profile._json.name;
+    githubProfileDetails.gender = profile.gender || profile._json.gender;
     githubProfileDetails.picture = profile._json.avatar_url;
     githubProfileDetails.email = get(head(profile.emails), 'value', '') || profile._json.email;
     done(null, githubProfileDetails);
